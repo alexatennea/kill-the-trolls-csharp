@@ -3,28 +3,28 @@ using System.Threading;
 
 namespace kill_the_trolls
 {
-    class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            Random random = new Random();
-            int health = 30;
-            int sword = random.Next(1, 5);
-            int ironFist = random.Next(2, 5);
-            int trollsHealth = 6;
-            int trollAttack = random.Next(1, 3);
-            int trolls = random.Next(3, 6);
+            var random = new Random();
+            var health = 30;
+            var sword = random.Next(1, 5);
+            var ironFist = random.Next(2, 5);
+            var trollsHealth = 6;
+            var trollAttack = random.Next(1, 3);
+            var trolls = random.Next(3, 6);
             var playagain = true;
 
             while (playagain)
             {
                 Console.WriteLine($"Your hero enters a room and inside there are {trolls} trolls");
                 Thread.Sleep(1300);
-                Console.WriteLine($"Your hero has 2 attacks, help him use them wisely");
+                Console.WriteLine("Your hero has 2 attacks, help him use them wisely");
                 Thread.Sleep(1300);
-                Console.WriteLine($"The Sword deals between 1 and 5 damage");
+                Console.WriteLine("The Sword deals between 1 and 5 damage");
                 Thread.Sleep(1300);
-                Console.WriteLine($"The Iron Fist deals between 2 and 4 damage");
+                Console.WriteLine("The Iron Fist deals between 2 and 4 damage");
                 Thread.Sleep(1300);
 
                 if (trolls > 4)
@@ -40,7 +40,7 @@ namespace kill_the_trolls
 
                 while (trolls != 0 && health > 0)
                 {
-                    Console.WriteLine($"What attack should you use? [Enter 1 for Sword or 2 for Iron Fist]");
+                    Console.WriteLine("What attack should you use? [Enter 1 for Sword or 2 for Iron Fist]");
                     var attack = Console.ReadLine();
                     var attackNumber = int.Parse(attack!);
                     Thread.Sleep(750);
@@ -113,17 +113,17 @@ namespace kill_the_trolls
 
                 if (trolls == 0 && health <= 0)
                 {
-                    Console.WriteLine($"You killed the trolls but died in the process!");
+                    Console.WriteLine("You killed the trolls but died in the process!");
                     Thread.Sleep(750);
                 }
                 else if (trolls == 0)
                 {
-                    Console.WriteLine($"You are victorious! You killed all the trolls!");
+                    Console.WriteLine("You are victorious! You killed all the trolls!");
                     Thread.Sleep(750);
                 }
                 else
                 {
-                    Console.WriteLine($"You died before killing all the trolls.");
+                    Console.WriteLine("You died before killing all the trolls.");
                     Thread.Sleep(750);
                 }
 
@@ -131,13 +131,13 @@ namespace kill_the_trolls
                 health = 20;
                 trollsHealth = 6;
 
-                Console.WriteLine($"Play again? [yes or no] ");
+                Console.WriteLine("Play again? [yes or no] ");
                 var wantToPlayAgain = Console.ReadLine();
 
                 playagain = wantToPlayAgain == "yes" || wantToPlayAgain == "y";
             }
 
-            Console.WriteLine($"It has been a pleasure slaughtering with you.");
+            Console.WriteLine("It has been a pleasure slaughtering with you.");
         }
     }
 }
