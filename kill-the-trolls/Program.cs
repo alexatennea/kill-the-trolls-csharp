@@ -9,16 +9,42 @@ namespace kill_the_trolls
         private static void Main()
         {
             var random = new Random();
-            var sword = random.Next(1, 5);
-            var ironFist = random.Next(2, 5);
-            var trollsHealth = 6;
-            var trollAttack = random.Next(1, 3);
+            var attack = new Attack();
+
+            var trollsHealth = 10;
             var trolls = random.Next(3, 6);
             var playAgain = true;
-            
-            var player = new Player()
+
+            var player = new Player
             {
                 Health = 30
+            };
+
+            var sword = new Weapon
+            {
+                Name = "Sword",
+                Description = "A worn short sword",
+                Multiplier = 1,
+                Dice = Dice.D6,
+                Modifier = 3
+            };
+
+            var ironFist = new Weapon
+            {
+                Name = "Iron Fist",
+                Description = "A mighty iron glove",
+                Multiplier = 1,
+                Dice = Dice.D8,
+                Modifier = 1
+            };
+
+            var trollSlam = new Weapon
+            {
+                Name = "Troll Slam",
+                Description = "Trolls slam with both fists",
+                Multiplier = 2,
+                Dice = Dice.D4,
+                Modifier = 2
             };
 
             while (playAgain)
@@ -27,9 +53,14 @@ namespace kill_the_trolls
                 Thread.Sleep(1300);
                 Console.WriteLine("Your hero has 2 attacks, help him use them wisely");
                 Thread.Sleep(1300);
-                Console.WriteLine("The Sword deals between 1 and 5 damage");
+                Console.WriteLine(
+                    $"The {sword.Name} deals {sword.Multiplier}d{(int) sword.Dice} + {sword.Modifier} damage");
                 Thread.Sleep(1300);
-                Console.WriteLine("The Iron Fist deals between 2 and 4 damage");
+                Console.WriteLine(
+                    $"The {ironFist.Name} deals {ironFist.Multiplier}d{(int) ironFist.Dice} + {ironFist.Modifier} damage");
+                Thread.Sleep(1300);
+                Console.WriteLine(
+                    $"The trolls use {trollSlam.Name} which deals {trollSlam.Multiplier}d{(int) trollSlam.Dice} + {trollSlam.Modifier} damage");
                 Thread.Sleep(1300);
 
                 if (trolls > 4)
@@ -46,26 +77,31 @@ namespace kill_the_trolls
                 while (trolls != 0 && player.Health > 0)
                 {
                     Console.WriteLine("What attack should you use? [Enter 1 for Sword or 2 for Iron Fist]");
-                    var attack = Console.ReadLine();
-                    var attackNumber = int.Parse(attack!);
+                    var whatAttack = Console.ReadLine();
+                    var attackNumber = int.Parse(whatAttack!);
                     Thread.Sleep(750);
 
+                    int attackDamage;
                     switch (attackNumber)
                     {
                         case 1:
                         {
-                            trollsHealth -= sword;
-                            Console.WriteLine($"You attacked with the Sword, causing {sword} damage.");
-                            Thread.Sleep(750);
-                            sword = random.Next(1, 5);
-                            player.Health -= trollAttack;
-                            Console.WriteLine($"The troll dealt {trollAttack} damage in return");
-                            Thread.Sleep(750);
-                            trollAttack = random.Next(0, 3);
-                            Console.WriteLine($"You have {player.Health} health left");
+                            trollsHealth -= attack.WithWeapon(sword, out attackDamage);
+                            Console.WriteLine($"You attacked with the Sword, causing {attackDamage} damage.");
                             Thread.Sleep(750);
                             Console.WriteLine($"Your current target has {trollsHealth} health left");
                             Thread.Sleep(750);
+
+                            if (trollsHealth > 0)
+                            {
+                                player.Health -= attack.WithWeapon(trollSlam, out attackDamage);
+                                Console.WriteLine($"The troll dealt {attackDamage} damage in return");
+                                Thread.Sleep(750);
+                            }
+
+                            Console.WriteLine($"You have {player.Health} health left");
+                            Thread.Sleep(750);
+
                             if (trollsHealth <= 0)
                             {
                                 trolls -= 1;
@@ -83,18 +119,22 @@ namespace kill_the_trolls
                         }
                         case 2:
                         {
-                            trollsHealth -= ironFist;
-                            Console.WriteLine($"You used Iron Fist, causing {ironFist} damage.");
-                            Thread.Sleep(750);
-                            ironFist = random.Next(2, 4);
-                            player.Health -= trollAttack;
-                            Console.WriteLine($"The troll dealt {trollAttack}  damage in return");
-                            Thread.Sleep(750);
-                            trollAttack = random.Next(0, 3);
-                            Console.WriteLine($"You have {player.Health} health left");
+                            trollsHealth -= attack.WithWeapon(ironFist, out attackDamage);
+                            Console.WriteLine($"You used Iron Fist, causing {attackDamage} damage.");
                             Thread.Sleep(750);
                             Console.WriteLine($"Your current target has {trollsHealth} health left");
                             Thread.Sleep(750);
+
+                            if (trollsHealth > 0)
+                            {
+                                player.Health -= attack.WithWeapon(trollSlam, out attackDamage);
+                                Console.WriteLine($"The troll dealt {attackDamage}  damage in return");
+                                Thread.Sleep(750);
+                            }
+                            
+                            Console.WriteLine($"You have {player.Health} health left");
+                            Thread.Sleep(750);
+
                             if (trollsHealth <= 0)
                             {
                                 trolls -= 1;
@@ -116,25 +156,25 @@ namespace kill_the_trolls
                     }
                 }
 
-                if (trolls == 0 && player.Health <= 0)
+                switch (trolls)
                 {
-                    Console.WriteLine("You killed the trolls but died in the process!");
-                    Thread.Sleep(750);
-                }
-                else if (trolls == 0)
-                {
-                    Console.WriteLine("You are victorious! You killed all the trolls!");
-                    Thread.Sleep(750);
-                }
-                else
-                {
-                    Console.WriteLine("You died before killing all the trolls.");
-                    Thread.Sleep(750);
+                    case 0 when player.Health <= 0:
+                        Console.WriteLine("You killed the trolls but died in the process!");
+                        Thread.Sleep(750);
+                        break;
+                    case 0:
+                        Console.WriteLine("You are victorious! You killed all the trolls!");
+                        Thread.Sleep(750);
+                        break;
+                    default:
+                        Console.WriteLine("You died before killing all the trolls.");
+                        Thread.Sleep(750);
+                        break;
                 }
 
                 trolls = random.Next(3, 6);
-                player.Health = 20;
-                trollsHealth = 6;
+                player.Health = 30;
+                trollsHealth = 10;
 
                 Console.WriteLine("Play again? [yes or no] ");
                 var wantToPlayAgain = Console.ReadLine();
