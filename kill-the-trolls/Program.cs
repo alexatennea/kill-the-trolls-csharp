@@ -5,7 +5,7 @@ namespace kill_the_trolls
 {
     internal static class Program
     {
-        private static void Main(string[] args)
+        private static void Main()
         {
             var random = new Random();
             var health = 30;
