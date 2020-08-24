@@ -6,5 +6,6 @@ namespace kill_the_trolls.models
     {
         public int Health { get; set; }
         public string Name { get; set; }
+        public List<Weapon> Weapons { get; set; }
     }
 }
